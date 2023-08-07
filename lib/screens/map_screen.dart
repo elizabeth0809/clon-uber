@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maps_app/blocs/blocs.dart';
 import 'package:maps_app/views/views.dart';
+import 'package:maps_app/widgets/widgets.dart';
 
 class MapScrenn extends StatefulWidget {
   const MapScrenn({super.key});
@@ -43,7 +44,13 @@ void dispose(){
         );
       },),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Column(children: [Text('hola mundo')]),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          BtnCurrentLocation()
+          ]
+        
+        ),
     );
   }
 }
