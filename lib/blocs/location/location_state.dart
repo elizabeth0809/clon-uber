@@ -4,6 +4,7 @@ class LocationState extends Equatable {
   //se necesita saber si se esta siguiendo alusuario
   final bool followingUser;
   final LatLng? lastKnownLocation;
+  //esto guarda todas las longitudes y latitudes por lass cuales me e movido
   final List<LatLng> myLocationHistory;
   //ultima ubicacion
 

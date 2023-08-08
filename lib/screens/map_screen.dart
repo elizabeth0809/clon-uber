@@ -13,45 +13,51 @@ class MapScrenn extends StatefulWidget {
 
 class _MapScrennState extends State<MapScrenn> {
   late LocationBloc locationBloc = BlocProvider.of<LocationBloc>(context);
- 
+
   //solose dispara cuando elwidget se construye
   @override
-void initState(){
-  super.initState();
-  //locationBloc = BlocProvider.of<LocationBloc>(context);
-  //locationBloc.getCurrentPosition();
-  locationBloc.startFollowingUser();
-  
-}
-@override
-void dispose(){
-  //esto limpia la subscripcion
-  super.dispose();
-  locationBloc.stopFollowingUser();
+  void initState() {
+    super.initState();
+    //locationBloc = BlocProvider.of<LocationBloc>(context);
+    //locationBloc.getCurrentPosition();
+    locationBloc.startFollowingUser();
+  }
 
-}
+  @override
+  void dispose() {
+    //esto limpia la subscripcion
+    super.dispose();
+    locationBloc.stopFollowingUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<LocationBloc, LocationState>(
-        builder: (context, state) {
-          if(state.lastKnownLocation == null) return Center(child: Text('Espere por favor...'));
-        
-        return SingleChildScrollView(
-          child: Stack( children: [
-            MapView(initialLocation: state.lastKnownLocation!,)
-          ],),
-        );
-      },),
+        builder: (context, locationState) {
+          if (locationState.lastKnownLocation == null){ 
+            return Center(child: Text('Espere por favor...'));
+          }
+          return BlocBuilder<MapBloc, MapState>(
+            builder: (context, MapState) {
+              return SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    MapView(
+                      initialLocation: locationState.lastKnownLocation!,
+                      polylines: MapState.polylines.values.toSet(),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          BtnCurrentLocation(),
-          BtnFollowUser()
-          ]
-        
-        ),
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [BtnCurrentLocation(), BtnFollowUser()]),
     );
   }
 }
