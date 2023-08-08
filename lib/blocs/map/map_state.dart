@@ -3,17 +3,17 @@ part of 'map_bloc.dart';
 class MapState extends Equatable {
   //esto es si el mapa esta inicializado
   final bool isMapInitialized;
-  final bool followUser;
+  final bool isFollowingUser;
   const MapState({ 
     this.isMapInitialized = false,
-    this.followUser = true
+    this.isFollowingUser = true
    });
   MapState copyWith({
     bool? isMapInitialized,
-    bool? followUser,
+    bool? isFollowingUser,
   }) =>MapState(
     isMapInitialized: isMapInitialized ?? this.isMapInitialized,
-    followUser: followUser ?? this.followUser
+    isFollowingUser: isFollowingUser ?? this.isFollowingUser
   );
   
   @override

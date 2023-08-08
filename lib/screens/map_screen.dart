@@ -47,7 +47,8 @@ void dispose(){
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          BtnCurrentLocation()
+          BtnCurrentLocation(),
+          BtnFollowUser()
           ]
         
         ),
