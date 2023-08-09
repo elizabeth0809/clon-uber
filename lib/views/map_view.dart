@@ -34,6 +34,7 @@ class MapView extends StatelessWidget {
           //esto es los botones de mas o menos del zoom
           zoomControlsEnabled: false,
           myLocationButtonEnabled: false,
+          //esto es lo que muestra las polyline
           polylines: polylines,
           onMapCreated: (controller) => mapBloc.add(OnMapInitializedEvent(controller)),
           ),

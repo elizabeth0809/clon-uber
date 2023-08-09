@@ -22,7 +22,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<OnStopFollowingUserEvent>(
         (event, emit) => emit(state.copyWith(isFollowingUser: false)));
     on<UpdateUserPolylineEvent>(_onPolylineNewPoint);
-
+    //emitira el valor si es true mostrara la ruta si no no lo hara
+    on<OnToggleUserRoute>((event, emit) => emit( state.copyWith( showMyRoute: !state.showMyRoute )) );
 
     locationBloc.stream.listen((locationState) {
       //esto trazara la linea(polyline) cuando la ultima ubicacion sea diferente de null

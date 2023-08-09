@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/blocs/blocs.dart';
 import 'package:maps_app/views/views.dart';
+
 import 'package:maps_app/widgets/widgets.dart';
 
 class MapScrenn extends StatefulWidget {
@@ -39,14 +41,21 @@ class _MapScrennState extends State<MapScrenn> {
             return Center(child: Text('Espere por favor...'));
           }
           return BlocBuilder<MapBloc, MapState>(
-            builder: (context, MapState) {
+            builder: (context, mapState) {
+              Map<String, Polyline> polylines = Map.from( mapState.polylines );
+              if ( !mapState.showMyRoute ) {
+                //LO QUE DETERMINA SI aparece o no la polilyne es el key
+                polylines.removeWhere((key, value) => key == 'myroute');
+              }
+
               return SingleChildScrollView(
                 child: Stack(
                   children: [
                     MapView(
                       initialLocation: locationState.lastKnownLocation!,
-                      polylines: MapState.polylines.values.toSet(),
-                    )
+                      polylines: polylines.values.toSet(),
+                    ),
+
                   ],
                 ),
               );
@@ -57,7 +66,9 @@ class _MapScrennState extends State<MapScrenn> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [BtnCurrentLocation(), BtnFollowUser()]),
+          children: [
+            BtnToggleUserRoute(),
+            BtnCurrentLocation(), BtnFollowUser()]),
     );
   }
 }
