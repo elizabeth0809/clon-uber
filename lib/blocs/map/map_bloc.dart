@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
@@ -14,6 +15,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   //se esta mandando la referencia para poder usar el location bloc aqui
   final LocationBloc locationBloc;
   GoogleMapController? _mapController;
+  StreamSubscription<LocationState>? locationStateSubscription;
   MapBloc({required this.locationBloc}) : super(MapState()) {
 
 
@@ -25,7 +27,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     //emitira el valor si es true mostrara la ruta si no no lo hara
     on<OnToggleUserRoute>((event, emit) => emit( state.copyWith( showMyRoute: !state.showMyRoute )) );
 
-    locationBloc.stream.listen((locationState) {
+    locationStateSubscription = locationBloc.stream.listen((locationState) {
       //esto trazara la linea(polyline) cuando la ultima ubicacion sea diferente de null
       if(locationState.lastKnownLocation != null){
         add(UpdateUserPolylineEvent(locationState.myLocationHistory));
@@ -69,5 +71,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   void moveCamera(LatLng newLocation) {
     final cameraUpdate = CameraUpdate.newLatLng(newLocation);
     _mapController?.animateCamera(cameraUpdate);
+  }
+  @override
+  Future<void> close(){
+    locationStateSubscription?.cancel();
+    return super.close();
   }
 }

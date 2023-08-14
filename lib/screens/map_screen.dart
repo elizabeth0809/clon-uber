@@ -47,7 +47,7 @@ class _MapScrennState extends State<MapScrenn> {
                 //LO QUE DETERMINA SI aparece o no la polilyne es el key
                 polylines.removeWhere((key, value) => key == 'myroute');
               }
-
+    
               return SingleChildScrollView(
                 child: Stack(
                   children: [
@@ -55,7 +55,8 @@ class _MapScrennState extends State<MapScrenn> {
                       initialLocation: locationState.lastKnownLocation!,
                       polylines: polylines.values.toSet(),
                     ),
-
+                  SearBar(),
+                  ManualMarker()
                   ],
                 ),
               );
