@@ -1,8 +1,36 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maps_app/blocs/blocs.dart';
 import 'package:maps_app/delegates/delegates.dart';
+import 'package:maps_app/models/models.dart';
 
 class SearBar extends StatelessWidget {
   const SearBar({super.key});
+//esto hace que al precionar el boton manual desaparezca la barra de busqueda
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        return state.displayManualMarker
+        ? SizedBox()
+        : FadeInDown(child: _SearBarBody());
+      },
+    );
+        
+  }
+}
+
+class _SearBarBody extends StatelessWidget {
+  const _SearBarBody({super.key});
+  void onSearchResult(BuildContext context, SearchResult result) {
+    final searchBloc = BlocProvider.of<SearchBloc>(context);
+    if (result.manual == true) {
+      searchBloc.add(OnActivateManualMarkerEvent());
+      return;
+    }
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +41,10 @@ class SearBar extends StatelessWidget {
         width: double.infinity,
         child: GestureDetector(
           onTap: () async {
-            final result = showSearch(
+            final result = await showSearch(
                 context: context, delegate: SearchDestinationDelegate());
-            if (result == null) return null;
-            print(result);
+            if (result == null) return;
+            onSearchResult(context, result);
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 13),
