@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/blocs/blocs.dart';
+import 'package:maps_app/models/models.dart';
 import 'package:maps_app/themes/themes.dart';
 
 part 'map_event.dart';
@@ -18,19 +19,18 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   LatLng? mapCenter;
   StreamSubscription<LocationState>? locationStateSubscription;
   MapBloc({required this.locationBloc}) : super(MapState()) {
-
-
     on<OnMapInitializedEvent>(_onInitMap);
     on<OnStartFollowingUserEvent>(_onStartFollowingUser);
     on<OnStopFollowingUserEvent>(
         (event, emit) => emit(state.copyWith(isFollowingUser: false)));
     on<UpdateUserPolylineEvent>(_onPolylineNewPoint);
     //emitira el valor si es true mostrara la ruta si no no lo hara
-    on<OnToggleUserRoute>((event, emit) => emit( state.copyWith( showMyRoute: !state.showMyRoute )) );
-
+    on<OnToggleUserRoute>(
+        (event, emit) => emit(state.copyWith(showMyRoute: !state.showMyRoute)));
+    on<DisplayPolylinesEvent>((event, emit) => emit(state.copyWith(polylines: event.polylines)),);
     locationStateSubscription = locationBloc.stream.listen((locationState) {
       //esto trazara la linea(polyline) cuando la ultima ubicacion sea diferente de null
-      if(locationState.lastKnownLocation != null){
+      if (locationState.lastKnownLocation != null) {
         add(UpdateUserPolylineEvent(locationState.myLocationHistory));
       }
       if (!state.isFollowingUser) return;
@@ -68,13 +68,27 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emit(state.copyWith(polylines: currentPolylines));
   }
 
+  void drawRoutePolyline(RouteDestination destination) async {
+    final myRoute = Polyline(
+        polylineId: PolylineId('route'),
+        color: Colors.black,
+        width: 4,
+        points: destination.points,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap);
+    final currentPolylines = Map<String, Polyline>.from(state.polylines);
+    currentPolylines['route'] = myRoute;
+    add(DisplayPolylinesEvent(currentPolylines));
+  }
+
   //esto va a servir para servir el mapa a cualquier lugar
   void moveCamera(LatLng newLocation) {
     final cameraUpdate = CameraUpdate.newLatLng(newLocation);
     _mapController?.animateCamera(cameraUpdate);
   }
+
   @override
-  Future<void> close(){
+  Future<void> close() {
     locationStateSubscription?.cancel();
     return super.close();
   }
