@@ -24,6 +24,10 @@ class _ManualMarkerBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final searchBloc = BlocProvider.of<SearchBloc>(context);
+    final locationBloc = BlocProvider.of<LocationBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
+    
     return SizedBox(
       width: size.width,
       height: size.height,
@@ -53,7 +57,13 @@ class _ManualMarkerBody extends StatelessWidget {
                   height: 50,
                   //bordes redondeados
                   shape: StadiumBorder(),
-                  onPressed: () {},
+                  onPressed: () async{
+                    final start = locationBloc.state.lastKnownLocation;
+                    if(start == null) return;
+                    final end = mapBloc.mapCenter;
+                    if(end == null) return;
+                   await searchBloc.getCoorsStartToEnd(start, end);
+                  },
                 ),
               ))
         ],

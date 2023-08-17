@@ -37,6 +37,7 @@ class MapView extends StatelessWidget {
           //esto es lo que muestra las polyline
           polylines: polylines,
           onMapCreated: (controller) => mapBloc.add(OnMapInitializedEvent(controller)),
+          onCameraMove: ( position ) => mapBloc.mapCenter = position.target
           ),
       ));
   }
