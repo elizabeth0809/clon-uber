@@ -23,13 +23,19 @@ class SearBar extends StatelessWidget {
 
 class _SearBarBody extends StatelessWidget {
   const _SearBarBody({super.key});
-  void onSearchResult(BuildContext context, SearchResult result) {
+  void onSearchResult(BuildContext context, SearchResult result) async{
     final searchBloc = BlocProvider.of<SearchBloc>(context);
+    final mapbloc = BlocProvider.of<MapBloc>(context);
+    final locationBloc = BlocProvider.of<LocationBloc>(context);
     if (result.manual == true) {
       searchBloc.add(OnActivateManualMarkerEvent());
       return;
     }
-    
+    //revidar si tenemos la posicion de la direccion
+    if(result.position !=null && locationBloc.state.lastKnownLocation != null){
+      final destination = await searchBloc.getCoorsStartToEnd(locationBloc.state.lastKnownLocation!, result.position!);
+      await mapbloc.drawRoutePolyline(destination);
+    }
   }
 
   @override

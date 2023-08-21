@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/blocs/blocs.dart';
 import 'package:maps_app/models/models.dart';
 
@@ -48,7 +49,14 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResult> {
             subtitle: Text(place.placeName),
             leading: const Icon(Icons.place_outlined, color: Colors.black,),
             onTap: () {
-              print('enviar a este lugar $place');
+              final result = SearchResult(
+                cancel: false, 
+                manual: false,
+                position: LatLng(place.center[1], place.center[0]),
+                name: place.text,
+                description: place.placeName
+                );
+            close(context, result);
             },
           );
         }, 
