@@ -16,7 +16,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     //esto junto con lo realizado en search bar hacen que se visualize el marcador de posicion
     on<OnActivateManualMarkerEvent>((event, emit) => emit(state.copyWith(displayManualMarker: true)));
     on<OnDeactivateManualMarkerEvent>((event, emit) => emit(state.copyWith(displayManualMarker: false)));
-    
+    on<OnNewPlacesFoundEvent>((event, emit) => emit(state.copyWith(places: event.places)));
   }
   Future<RouteDestination> getCoorsStartToEnd (LatLng start, LatLng end) async{
     final trafficResponse = await trafficService.getCoorsStartToEnd(start, end);
@@ -37,7 +37,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
    }
    Future getPlacesByQuery (LatLng proximity, String query) async{
-    final resp = trafficService.getResultsByQuery(proximity, query);
-    //TODO: por aqui tenemos que alamcenar en el state
+    final newPlaces = await trafficService.getResultsByQuery(proximity, query);
+    //TODO: por aqui tenemos que almacenar en el state
+    add(OnNewPlacesFoundEvent(newPlaces));
    }
 }
