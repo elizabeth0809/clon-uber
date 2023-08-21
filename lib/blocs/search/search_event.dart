@@ -12,3 +12,8 @@ class OnNewPlacesFoundEvent extends SearchEvent{
   final List<Feature> places;
   const OnNewPlacesFoundEvent(this.places);
 }
+//evento de historial de los lugares
+class AddToHistoryEvent extends SearchEvent{
+  final Feature place;
+  const AddToHistoryEvent(this.place);
+ }

@@ -56,6 +56,8 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResult> {
                 name: place.text,
                 description: place.placeName
                 );
+                //aqui se dispara el evento de historial
+                searchBloc.add(AddToHistoryEvent(place));
             close(context, result);
             },
           );
@@ -67,6 +69,7 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResult> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final history = BlocProvider.of<SearchBloc>(context).state.history;
     return ListView(
       children: [
         ListTile(
@@ -82,7 +85,25 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResult> {
             final result = SearchResult(cancel: false, manual: true);
             close(context, result);
           },
-        )
+        ),
+        //aqui se muestra el historial
+        ...history.map((place) => ListTile(
+          title: Text(place.text),
+          subtitle: Text(place.placeName),
+          leading: const Icon(Icons.history, color: Colors.black),
+          //al presionar este elemto del historial muestra el polilyne de ese elemento
+          onTap: () {
+            final result = SearchResult(
+                cancel: false, 
+                manual: false,
+                position: LatLng(place.center[1], place.center[0]),
+                name: place.text,
+                description: place.placeName
+                );
+               
+            close(context, result);
+          },
+          ))
       ],
     );
   }
