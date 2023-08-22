@@ -27,7 +27,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     //emitira el valor si es true mostrara la ruta si no no lo hara
     on<OnToggleUserRoute>(
         (event, emit) => emit(state.copyWith(showMyRoute: !state.showMyRoute)));
-    on<DisplayPolylinesEvent>((event, emit) => emit(state.copyWith(polylines: event.polylines)),);
+    on<DisplayPolylinesEvent>((event, emit) => emit(state.copyWith(polylines: event.polylines, markers: event.markers)),);
     locationStateSubscription = locationBloc.stream.listen((locationState) {
       //esto trazara la linea(polyline) cuando la ultima ubicacion sea diferente de null
       if (locationState.lastKnownLocation != null) {
@@ -63,6 +63,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         points: event.userLocations);
+
+
     final currentPolylines = Map<String, Polyline>.from(state.polylines);
     currentPolylines['myroute'] = myRoute;
     emit(state.copyWith(polylines: currentPolylines));
@@ -76,9 +78,25 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         points: destination.points,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap);
+
+    // esta es la creacion de los markers
+    final startMarker = Marker(
+      markerId: MarkerId('start'), 
+      position: destination.points.first
+      );
+    final endMarker = Marker(
+      markerId: MarkerId('end'), 
+      position: destination.points.last
+      );
+
     final currentPolylines = Map<String, Polyline>.from(state.polylines);
     currentPolylines['route'] = myRoute;
-    add(DisplayPolylinesEvent(currentPolylines));
+
+    final currentMarkers = Map<String, Marker>.from(state.markers);
+    currentMarkers['start'] = startMarker;
+    currentMarkers['end'] = endMarker;
+    
+    add(DisplayPolylinesEvent(currentPolylines, currentMarkers));
   }
 
   //esto va a servir para servir el mapa a cualquier lugar

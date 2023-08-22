@@ -53,7 +53,8 @@ class _MapScrennState extends State<MapScrenn> {
                   children: [
                     MapView(
                       initialLocation: locationState.lastKnownLocation!,
-                      polylines: polylines.values.toSet(),
+                      polylines: polylines.values.toSet(), 
+                      markers: mapState.markers.values.toSet(),
                     ),
                   SearBar(),
                   ManualMarker()
