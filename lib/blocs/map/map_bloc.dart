@@ -78,15 +78,29 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         points: destination.points,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap);
-
+    //vamos a mostrear los kms entre destinos
+    double kms = destination.distance / 100;
+    kms = (kms * 100).floorToDouble();
+    //esto es lo mismo que km = km / 100
+    kms /= 100;
+    double tripDuration = (destination.duration / 60).floorToDouble();
     // esta es la creacion de los markers
     final startMarker = Marker(
       markerId: MarkerId('start'), 
-      position: destination.points.first
+      position: destination.points.first,
+      //esto es lo que da la informacion del marker selecionado
+      infoWindow:  InfoWindow(
+        title: 'Inicio',
+        snippet: 'kms: $kms, duration: $tripDuration'
+      )
       );
     final endMarker = Marker(
       markerId: MarkerId('end'), 
-      position: destination.points.last
+      position: destination.points.last,
+      infoWindow: InfoWindow(
+        title: destination.endPlace.text,
+        snippet: destination.endPlace.placeName
+      )
       );
 
     final currentPolylines = Map<String, Polyline>.from(state.polylines);

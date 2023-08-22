@@ -8,7 +8,7 @@ final accessToken = 'pk.eyJ1IjoiZWxpemEwODA4IiwiYSI6ImNsbDN2eTNsbzAwZDEzZnQwbG5w
       
       'access_token': accessToken,
       'language' : 'es',
-      'limit': 10
+      
     });
     super.onRequest(options,handler);
   }
