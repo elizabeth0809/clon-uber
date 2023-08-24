@@ -30,7 +30,7 @@ class MapsApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: Loadingscreen()
+      home:Loadingscreen()
     );
   }
 }

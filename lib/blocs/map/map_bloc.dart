@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/blocs/blocs.dart';
+import 'package:maps_app/helpers/helpers.dart';
 import 'package:maps_app/models/models.dart';
 import 'package:maps_app/themes/themes.dart';
 
@@ -83,24 +84,33 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     kms = (kms * 100).floorToDouble();
     //esto es lo mismo que km = km / 100
     kms /= 100;
-    double tripDuration = (destination.duration / 60).floorToDouble();
+    int tripDuration = (destination.duration / 60).floorToDouble().toInt();
+    //imagen del custommarker (es decir el icono de ubicacion)
+    /*final startMaker = await getAssetImageMarker();
+    //imagen del custommarker pero traide desde un url
+    final endMaker = await getNetworkImageMarker();*/
+    final startMaker = await getStartCustomMarker(tripDuration, 'Mi Ubicacion');
+    final endMaker = await getEndCustomMarker(kms.toInt(), destination.endPlace.text);
     // esta es la creacion de los markers
     final startMarker = Marker(
+      anchor: const Offset(0.1, 1),
       markerId: MarkerId('start'), 
       position: destination.points.first,
+      icon: startMaker,
       //esto es lo que da la informacion del marker selecionado
-      infoWindow:  InfoWindow(
+      /*infoWindow:  InfoWindow(
         title: 'Inicio',
         snippet: 'kms: $kms, duration: $tripDuration'
-      )
+      )*/
       );
     final endMarker = Marker(
       markerId: MarkerId('end'), 
       position: destination.points.last,
-      infoWindow: InfoWindow(
+      icon: endMaker,
+      /*infoWindow: InfoWindow(
         title: destination.endPlace.text,
         snippet: destination.endPlace.placeName
-      )
+      )*/
       );
 
     final currentPolylines = Map<String, Polyline>.from(state.polylines);
